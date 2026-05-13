@@ -8,5 +8,5 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   treeshake: true,
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom', 'react-markdown', 'remark-gfm'],
 });

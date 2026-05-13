@@ -2,7 +2,12 @@
   "name": "react-thoughtcast",
   "version": "0.1.0",
   "description": "Animated string-transition component for React",
-  "keywords": ["react", "animation", "transition", "text"],
+  "keywords": [
+    "react",
+    "animation",
+    "transition",
+    "text"
+  ],
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -31,15 +36,24 @@
   },
   "peerDependencies": {
     "react": ">=17",
-    "react-dom": ">=17"
+    "react-dom": ">=17",
+    "react-markdown": ">=9",
+    "remark-gfm": ">=4"
+  },
+  "peerDependenciesMeta": {
+    "react-markdown": { "optional": true },
+    "remark-gfm": { "optional": true }
   },
   "devDependencies": {
+    "@types/hast": "^3.0.4",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
     "eslint": "^9.0.0",
     "eslint-plugin-react-hooks": "^5.0.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.0.0"
