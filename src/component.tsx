@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { injectStyles } from './styles';
-import type { AnimationMode, ThoughtcastProps } from './types';
+import { Loader } from './loader';
+import type { AnimationMode, LoaderType, ThoughtcastProps } from './types';
 
-export type { AnimationMode, ThoughtcastProps };
+export type { AnimationMode, LoaderType, ThoughtcastProps };
 
 type Phase = 'idle' | 'exit' | 'enter';
 
@@ -11,6 +12,10 @@ export function Thoughtcast({
   mode = 'slide-up',
   duration = 220,
   className,
+  wrapper: Wrapper,
+  loader,
+  loaderColor,
+  loaderGradient,
 }: ThoughtcastProps) {
   const [visible, setVisible] = useState(value);
   const [phase, setPhase] = useState<Phase>('idle');
@@ -41,15 +46,28 @@ export function Thoughtcast({
   }
 
   const animClass = phase !== 'idle' ? `thoughtcast-${phase}-${mode}` : '';
-  const cls = ['thoughtcast-root', animClass, className].filter(Boolean).join(' ');
+  const style = { '--dur': `${duration}ms` } as React.CSSProperties;
+  const displayValue = phase === 'exit'
+    ? visible
+    : (phase === 'enter' ? latestRef.current : visible);
+  const content = Wrapper ? <Wrapper value={displayValue} /> : displayValue;
 
+  if (loader) {
+    const rootCls = ['thoughtcast-root', 'thoughtcast-root--row', className].filter(Boolean).join(' ');
+    return (
+      <span className={rootCls}>
+        <Loader type={loader} color={loaderColor} gradient={loaderGradient} />
+        <span className={animClass} style={style} onAnimationEnd={onAnimationEnd}>
+          {content}
+        </span>
+      </span>
+    );
+  }
+
+  const rootCls = ['thoughtcast-root', animClass, className].filter(Boolean).join(' ');
   return (
-    <span
-      className={cls}
-      style={{ '--dur': `${duration}ms` } as React.CSSProperties}
-      onAnimationEnd={onAnimationEnd}
-    >
-      {phase === 'exit' ? visible : (phase === 'enter' ? latestRef.current : visible)}
+    <span className={rootCls} style={style} onAnimationEnd={onAnimationEnd}>
+      {content}
     </span>
   );
 }
