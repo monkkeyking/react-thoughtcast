@@ -1,6 +1,6 @@
 {
   "name": "react-thoughtcast",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Animated string-transition component for React",
   "keywords": [
     "react",
@@ -41,8 +41,12 @@
     "remark-gfm": ">=4"
   },
   "peerDependenciesMeta": {
-    "react-markdown": { "optional": true },
-    "remark-gfm": { "optional": true }
+    "react-markdown": {
+      "optional": true
+    },
+    "remark-gfm": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/hast": "^3.0.4",
