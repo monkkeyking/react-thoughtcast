@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
+import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import type { Plugin } from 'unified';
+import type { Plugin, PluggableList } from 'unified';
 import type { Root, Element } from 'hast';
 import { injectStyles } from './styles';
+
+export type { Components };
 
 export interface MarkdownTypewriterProps {
   value: string;
@@ -12,6 +15,9 @@ export interface MarkdownTypewriterProps {
   streaming?: boolean;
   className?: string;
   onComplete?: () => void;
+  remarkPlugins?: PluggableList;
+  rehypePlugins?: PluggableList;
+  components?: Components;
 }
 
 const cursorPlugin: Plugin<[], Root> = () => (tree) => {
@@ -32,9 +38,8 @@ const cursorPlugin: Plugin<[], Root> = () => (tree) => {
   tree.children.push(cursorNode);
 };
 
-const REMARK_PLUGINS = [remarkGfm];
-const REHYPE_WITH_CURSOR = [cursorPlugin];
-const REHYPE_EMPTY: [] = [];
+const BASE_REMARK_PLUGINS: PluggableList = [remarkGfm];
+const REHYPE_EMPTY: PluggableList = [];
 
 export function MarkdownTypewriter({
   value,
@@ -43,6 +48,9 @@ export function MarkdownTypewriter({
   streaming = false,
   className,
   onComplete,
+  remarkPlugins,
+  rehypePlugins,
+  components,
 }: MarkdownTypewriterProps) {
   const [index, setIndex] = useState(0);
   const onCompleteRef = useRef(onComplete);
@@ -71,11 +79,23 @@ export function MarkdownTypewriter({
   const partial = value.slice(0, index);
   const done = index >= value.length;
 
+  const mergedRemarkPlugins = useMemo<PluggableList>(
+    () => remarkPlugins ? [...BASE_REMARK_PLUGINS, ...remarkPlugins] : BASE_REMARK_PLUGINS,
+    [remarkPlugins],
+  );
+
+  const mergedRehypePlugins = useMemo<PluggableList>(() => {
+    const withCursor = cursor && !done;
+    const base: PluggableList = withCursor ? [cursorPlugin] : REHYPE_EMPTY;
+    return rehypePlugins ? [...base, ...rehypePlugins] : base;
+  }, [cursor, done, rehypePlugins]);
+
   return (
     <div className={['thoughtcast-md', className].filter(Boolean).join(' ')}>
       <ReactMarkdown
-        remarkPlugins={REMARK_PLUGINS}
-        rehypePlugins={cursor && !done ? REHYPE_WITH_CURSOR : REHYPE_EMPTY}
+        remarkPlugins={mergedRemarkPlugins}
+        rehypePlugins={mergedRehypePlugins}
+        components={components}
       >
         {partial}
       </ReactMarkdown>
