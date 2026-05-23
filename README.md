@@ -4,6 +4,8 @@
 
 Animated text components for React. Drop in a `<Thoughtcast>` and any time its `value` prop changes, the old text animates out and the new text animates in. Pair it with `<MarkdownTypewriter>` for character-by-character markdown rendering, or use `<Loader>` standalone for inline loading indicators.
 
+**[Live playground →](https://monkkeyking.github.io/thoughtground/)**
+
 ## Install
 
 ```bash
